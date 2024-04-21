@@ -351,7 +351,7 @@ Aivan kuten REST:in tapauksessa myös nyt ideana on, että kirjautunut käyttäj
 
 ![](../../images/8/24x.png)
 
-Muutetaan backendin käynnistämistä siten, että annetaan käynnistyksen huolehtivalle funktiolle [startStandaloneServer](https://www.apollographql.com/docs/apollo-server/api/standalone/) toinen parametri [context](https://www.apollographql.com/docs/apollo-server/data/context/):
+Muutetaan backendin käynnistämistä siten, että annetaan käynnistyksestä huolehtivalle funktiolle [startStandaloneServer](https://www.apollographql.com/docs/apollo-server/api/standalone/) toinen parametri [context](https://www.apollographql.com/docs/apollo-server/data/context/):
 
 ```js
 startStandaloneServer(server, {
@@ -456,14 +456,14 @@ Mutaation toteuttava resolveri:
 
 ```js
   addAsFriend: async (root, args, { currentUser }) => {
-    const nonFriendAlready = (person) => 
-      !currentUser.friends.map(f => f._id.toString()).includes(person._id.toString())
-
     if (!currentUser) {
       throw new GraphQLError('wrong credentials', {
         extensions: { code: 'BAD_USER_INPUT' }
       }) 
     }
+
+    const nonFriendAlready = (person) => 
+      !currentUser.friends.map(f => f._id.toString()).includes(person._id.toString())
 
     const person = await Person.findOne({ name: args.name })
     if ( nonFriendAlready(person) ) {
